@@ -37,7 +37,7 @@ spec:
       - name: db-migrate
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/app/hyperfleet-api", "migrate"]
+        command: ["/app/hyperfleet-api", "migrate", "--db-sslmode={{ .Values.database.sslMode | default "require" }}"]
         volumeMounts:
         - name: secrets
           mountPath: /app/secrets
@@ -55,6 +55,7 @@ spec:
         - --api-server-bindaddress={{ .Values.server.bindAddress | default ":8000" }}
         - --health-server-bindaddress={{ .Values.server.healthBindAddress | default ":8080" }}
         - --metrics-server-bindaddress={{ .Values.server.metricsBindAddress | default ":9090" }}
+        - --db-sslmode={{ .Values.database.sslMode | default "require" }}
         ports:
         - name: http
           containerPort: 8000
