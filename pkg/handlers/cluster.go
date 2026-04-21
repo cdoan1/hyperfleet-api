@@ -162,7 +162,13 @@ func (h ClusterHandler) Get(w http.ResponseWriter, r *http.Request) {
 func (h ClusterHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	cfg := &handlerConfig{
 		Action: func() (interface{}, *errors.ServiceError) {
-			return nil, errors.NotImplemented("delete")
+			id := mux.Vars(r)["id"]
+			ctx := r.Context()
+			err := h.cluster.Delete(ctx, id)
+			if err != nil {
+				return nil, err
+			}
+			return nil, nil
 		},
 	}
 	handleDelete(w, r, cfg, http.StatusNoContent)
